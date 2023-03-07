@@ -1,13 +1,15 @@
-import express from 'express'
+import express, { Request, Response } from 'express'
+import config from 'config'
 
 const app = express()
 
-const PORT = 3000
+const PORT = config.get<number>('port')
 
-app.get('/', (req, res) => {
+app.get('/', (_req: Request, res: Response) => {
   res.send('Hello World!')
 })
 
 app.listen(PORT, () => {
-  console.log(`Server is listening on port ${PORT}`)
+  const baseUrl = config.get<string>('baseUrl')
+  console.log(`Server is listening on ${baseUrl}:${PORT}`)
 })
