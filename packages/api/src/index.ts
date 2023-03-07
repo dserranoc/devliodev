@@ -1,15 +1,16 @@
 import config from 'config'
 import app from './app'
 import db from './db'
+import log from './utils/logger'
 
 const PORT = config.get<number>('port')
 
 db.connect().then(() => {
-  console.log('Connected to database')
+  log.info('Connected to database')
   app.listen(PORT, () => {
-    console.log(`Server listening on port ${PORT}`)
+    log.info(`Server listening on port ${PORT}`)
   })
 }).catch((err) => {
-  console.error(err)
+  log.error(err)
   process.exit(1)
 })

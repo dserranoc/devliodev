@@ -1,5 +1,6 @@
 import mongoose from 'mongoose'
 import config from 'config'
+import log from './utils/logger'
 
 const mongoUrl = config.get<string>('mongoUrl')
 
@@ -7,7 +8,7 @@ const connect = async (): Promise<void> => {
   try {
     await mongoose.connect(mongoUrl)
   } catch (err) {
-    console.error(err)
+    log.error(err)
     process.exit(1)
   }
 }
