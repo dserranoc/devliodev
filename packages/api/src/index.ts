@@ -1,15 +1,15 @@
-import express, { Request, Response } from 'express'
 import config from 'config'
-
-const app = express()
+import app from './app'
+import db from './db'
 
 const PORT = config.get<number>('port')
 
-app.get('/', (_req: Request, res: Response) => {
-  res.send('Hello World!')
-})
-
-app.listen(PORT, () => {
-  const baseUrl = config.get<string>('baseUrl')
-  console.log(`Server is listening on ${baseUrl}:${PORT}`)
+db.connect().then(() => {
+  console.log('Connected to database')
+  app.listen(PORT, () => {
+    console.log(`Server listening on port ${PORT}`)
+  })
+}).catch((err) => {
+  console.error(err)
+  process.exit(1)
 })

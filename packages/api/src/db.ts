@@ -15,3 +15,5 @@ const connect = async (): Promise<void> => {
 const close = async (): Promise<void> => {
   await mongoose.connection.close()
 }
+
+export default { connect, close }
