@@ -1,10 +1,9 @@
 import express from 'express'
+import router from './routes'
 
 const app = express()
 app.use(express.json())
 
-app.get('/healthcheck', (_, res) => {
-  res.send('OK')
-})
+app.use('/api', router)
 
 export default app
