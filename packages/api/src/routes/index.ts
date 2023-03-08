@@ -10,9 +10,9 @@ router.get('/health', (_req: Request, res: Response) => {
   res.sendStatus(200)
 })
 
-router.use('/user', userRouter)
-router.use('/project', projectRouter)
-router.use('/portfolio', portfolioRouter)
-router.use('/publication', publicationRouter)
+router.use('/users', userRouter)
+router.use('/projects', projectRouter)
+router.use('/portfolios', portfolioRouter)
+router.use('/publications', publicationRouter)
 
 export default router
