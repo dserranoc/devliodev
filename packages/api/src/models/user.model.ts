@@ -1,6 +1,7 @@
 import { Schema, model, Types } from 'mongoose'
 import bcrypt from 'bcrypt'
 import config from 'config'
+import { nanoid } from 'nanoid'
 import Project from './project.model'
 import Portfolio from './portfolio.model'
 import Publication from './publication.model'
@@ -21,7 +22,7 @@ export interface UserDocument extends UserInput, Document {
   bio?: string
   socials?: string[]
   verified: boolean
-  verificationCode?: string
+  verificationCode: string
   createdAt: Date
   updatedAt: Date
   comparePassword: (candidatePassword: string) => Promise<boolean>
@@ -40,7 +41,7 @@ const userSchema = new Schema<UserDocument>({
   bio: { type: String },
   socials: [{ type: String }],
   verified: { type: Boolean, required: true, default: false },
-  verificationCode: { type: String }
+  verificationCode: { type: String, default: () => nanoid() }
 }, { timestamps: true })
 
 userSchema.set('toJSON', {
