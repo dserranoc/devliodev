@@ -15,8 +15,8 @@ const createUserPayload = {
 
 const params = {
   params: object({
-    id: string({
-      required_error: 'id is required'
+    email: string({
+      required_error: 'Email is required'
     })
   })
 }
@@ -72,6 +72,8 @@ export const resetPasswordSchema = object({
 
 export type CreateUserInput = Omit<TypeOf<typeof createUserSchema>, 'body.passwordConfirmation'>
 export type UpdateUserInput = Omit<TypeOf<typeof updateUserSchema>, 'body.passwordConfirmation'>
+export type DeleteUserInput = TypeOf<typeof deleteUserSchema>
+export type GetUserInput = TypeOf<typeof getUserSchema>
 export type VerifyUserInput = TypeOf<typeof verifyUserSchema>
 export type ForgotPasswordInput = TypeOf<typeof forgotPasswordSchema>
 export type ResetPasswordInput = TypeOf<typeof resetPasswordSchema>
