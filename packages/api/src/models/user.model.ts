@@ -21,6 +21,7 @@ export interface UserDocument extends UserInput, Document {
   bio?: string
   socials?: string[]
   verified: boolean
+  verificationCode?: string
   createdAt: Date
   updatedAt: Date
   comparePassword: (candidatePassword: string) => Promise<boolean>
@@ -38,7 +39,8 @@ const userSchema = new Schema<UserDocument>({
   avatar: { type: String },
   bio: { type: String },
   socials: [{ type: String }],
-  verified: { type: Boolean, required: true, default: false }
+  verified: { type: Boolean, required: true, default: false },
+  verificationCode: { type: String }
 }, { timestamps: true })
 
 userSchema.set('toJSON', {
