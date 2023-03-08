@@ -1,4 +1,6 @@
 import { Schema, model, Types } from 'mongoose'
+import Project from './project.model'
+import User from './user.model'
 
 export interface PortfolioInput {
   name: string
@@ -23,6 +25,17 @@ portfolioSchema.set('toJSON', {
     delete returnedObject._id
     delete returnedObject.__v
   }
+})
+
+portfolioSchema.pre('deleteOne', { document: true, query: false }, async function (next) {
+  if (this.assignedTo.length > 0) {
+    const err = new Error('Cannot delete a published portfolio. Please unpublish it first.')
+    return next(err)
+  }
+
+  await User.updateOne({ _id: this.user }, { $pull: { portfolios: this._id } })
+  await Project.updateMany({ _id: { $in: this.projects } }, { $pull: { assignedTo: this._id } })
+  next()
 })
 
 export default model<PortfolioDocument>('Portfolio', portfolioSchema)
