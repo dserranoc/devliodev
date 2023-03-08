@@ -1,10 +1,23 @@
-import { Schema, model } from 'mongoose'
+import { Schema, model, Types } from 'mongoose'
 
-const publicationSchema = new Schema({
+export type PublicationStatus = 'draft' | 'published'
+
+export interface PublicationInput {
+  subdomain: string
+  portfolio: Types.ObjectId
+  status: PublicationStatus
+  template: string
+}
+
+export interface PublicationDocument extends PublicationInput, Document {
+  user: { type: Schema.Types.ObjectId, ref: 'User' }
+}
+
+const publicationSchema = new Schema<PublicationDocument>({
   subdomain: { type: String, required: true, unique: true },
   portfolio: { type: Schema.Types.ObjectId, ref: 'Portfolio' },
   status: { type: String, required: true, enum: ['draft', 'published'], default: 'draft' },
   template: { type: String, required: true }
 }, { timestamps: true })
 
-export default model('Publication', publicationSchema)
+export default model<PublicationDocument>('Publication', publicationSchema)
