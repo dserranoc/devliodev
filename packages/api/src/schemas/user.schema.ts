@@ -1,6 +1,6 @@
 import { object, string, TypeOf } from 'zod'
 
-export const createUserSchema = object({
+const createUserPayload = {
   body: object({
     email: string({ required_error: 'Email is required' }).email('Not a valid email'),
     password: string({ required_error: 'Password is required' }).min(8, 'Password must be at least 8 characters long'),
@@ -11,6 +11,30 @@ export const createUserSchema = object({
     message: 'Passwords do not match',
     path: ['passwordConfirmation']
   })
+}
+
+const params = {
+  params: object({
+    id: string({
+      required_error: 'id is required'
+    })
+  })
+}
+export const createUserSchema = object({
+  ...createUserPayload
+})
+
+export const updateUserSchema = object({
+  ...createUserPayload,
+  ...params
+})
+
+export const deleteUserSchema = object({
+  ...params
+})
+
+export const getUserSchema = object({
+  ...params
 })
 
 export const verifyUserSchema = object({
@@ -46,7 +70,8 @@ export const resetPasswordSchema = object({
   })
 })
 
-export type CreateUserInput = Omit<TypeOf<typeof createUserSchema>, 'body.passwordConfirmation'>['body']
-export type VerifyUserInput = TypeOf<typeof verifyUserSchema>['params']
-export type ForgotPasswordInput = TypeOf<typeof forgotPasswordSchema>['body']
+export type CreateUserInput = Omit<TypeOf<typeof createUserSchema>, 'body.passwordConfirmation'>
+export type UpdateUserInput = Omit<TypeOf<typeof updateUserSchema>, 'body.passwordConfirmation'>
+export type VerifyUserInput = TypeOf<typeof verifyUserSchema>
+export type ForgotPasswordInput = TypeOf<typeof forgotPasswordSchema>
 export type ResetPasswordInput = TypeOf<typeof resetPasswordSchema>
