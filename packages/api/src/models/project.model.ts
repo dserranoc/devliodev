@@ -1,4 +1,6 @@
 import { Schema, model, Types } from 'mongoose'
+import Portfolio from './portfolio.model'
+import User from './user.model'
 
 export interface ProjectInput {
   name: string
@@ -24,5 +26,13 @@ const projectSchema = new Schema<ProjectDocument>({
   assignedTo: [{ type: Schema.Types.ObjectId, ref: 'Portfolio' }],
   user: { type: Schema.Types.ObjectId, ref: 'User' }
 }, { timestamps: true })
+
+projectSchema.set('toJSON', {
+  transform: (_, returnedObject) => {
+    returnedObject.id = returnedObject._id
+    delete returnedObject._id
+    delete returnedObject.__v
+  }
+})
 
 export default model<ProjectDocument>('Project', projectSchema)
