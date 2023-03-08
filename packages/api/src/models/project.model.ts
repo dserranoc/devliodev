@@ -1,5 +1,20 @@
-import { Schema, model } from 'mongoose'
-const projectSchema = new Schema({
+import { Schema, model, Types } from 'mongoose'
+
+export interface ProjectInput {
+  name: string
+  description: string
+  image: string
+  url?: string
+  urlRepository?: string
+  technologies: string[]
+}
+
+export interface ProjectDocument extends ProjectInput, Document {
+  assignedTo: Types.ObjectId[]
+  user: Types.ObjectId
+}
+
+const projectSchema = new Schema<ProjectDocument>({
   name: { type: String, required: true },
   description: { type: String, required: true },
   image: { type: String, required: true },
@@ -10,4 +25,4 @@ const projectSchema = new Schema({
   user: { type: Schema.Types.ObjectId, ref: 'User' }
 }, { timestamps: true })
 
-export default model('Project', projectSchema)
+export default model<ProjectDocument>('Project', projectSchema)
