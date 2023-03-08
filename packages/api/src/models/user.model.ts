@@ -1,6 +1,27 @@
-import { Schema, model } from 'mongoose'
+import { Schema, model, Types } from 'mongoose'
 
-const userSchema = new Schema({
+export interface UserInput {
+  email: string
+  password: string
+  name: string
+  surname: string
+}
+
+export interface UserDocument extends UserInput, Document {
+  portfolios: Types.ObjectId[]
+  projects: Types.ObjectId[]
+  publications: Types.ObjectId[]
+  skills?: string[]
+  avatar?: string
+  bio?: string
+  socials?: string[]
+  verified: boolean
+  createdAt: Date
+  updatedAt: Date
+  comparePassword: (candidatePassword: string) => Promise<boolean>
+}
+
+const userSchema = new Schema<UserDocument>({
   name: { type: String, required: true },
   surname: { type: String, required: true },
   email: { type: String, required: true, unique: true },
@@ -15,4 +36,4 @@ const userSchema = new Schema({
   verified: { type: Boolean, required: true, default: false }
 }, { timestamps: true })
 
-export default model('User', userSchema)
+export default model<UserDocument>('User', userSchema)
