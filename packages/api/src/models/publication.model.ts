@@ -20,4 +20,12 @@ const publicationSchema = new Schema<PublicationDocument>({
   template: { type: String, required: true }
 }, { timestamps: true })
 
+publicationSchema.set('toJSON', {
+  transform: (_, returnedObject) => {
+    returnedObject.id = returnedObject._id
+    delete returnedObject._id
+    delete returnedObject.__v
+  }
+})
+
 export default model<PublicationDocument>('Publication', publicationSchema)
