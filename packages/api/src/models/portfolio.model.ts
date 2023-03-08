@@ -1,10 +1,20 @@
-import { Schema, model } from 'mongoose'
+import { Schema, model, Types } from 'mongoose'
 
-const portfolioSchema = new Schema({
+export interface PortfolioInput {
+  name: string
+  projects: Types.ObjectId[]
+}
+
+export interface PortfolioDocument extends PortfolioInput, Document {
+  assignedTo: Types.ObjectId[]
+  user: { type: Schema.Types.ObjectId, ref: 'User' }
+}
+
+const portfolioSchema = new Schema<PortfolioDocument>({
   name: { type: String, required: true },
   projects: [{ type: Schema.Types.ObjectId, ref: 'Project' }],
-  publications: [{ type: Schema.Types.ObjectId, ref: 'Publication' }],
+  assignedTo: [{ type: Schema.Types.ObjectId, ref: 'Publication' }],
   user: { type: Schema.Types.ObjectId, ref: 'User' }
 }, { timestamps: true })
 
-export default model('Portfolio', portfolioSchema)
+export default model<PortfolioDocument>('Portfolio', portfolioSchema)
