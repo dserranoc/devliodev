@@ -35,4 +35,10 @@ projectSchema.set('toJSON', {
   }
 })
 
+projectSchema.pre('deleteOne', { document: true, query: false }, async function (next) {
+  await User.updateOne({ _id: this.user }, { $pull: { projects: this._id } })
+  await Portfolio.updateMany({ _id: { $in: this.assignedTo } }, { $pull: { projects: this._id } })
+  next()
+})
+
 export default model<ProjectDocument>('Project', projectSchema)
