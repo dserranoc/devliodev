@@ -1,4 +1,6 @@
 import { Schema, model, Types } from 'mongoose'
+import User from './user.model'
+import Portfolio from './portfolio.model'
 
 export type PublicationStatus = 'draft' | 'published'
 
@@ -26,6 +28,12 @@ publicationSchema.set('toJSON', {
     delete returnedObject._id
     delete returnedObject.__v
   }
+})
+
+publicationSchema.pre('deleteOne', { document: true, query: false }, async function (next) {
+  await Portfolio.updateOne({ _id: this.portfolio }, { $pull: { publications: this._id } })
+  await User.updateOne({ _id: this.user }, { $pull: { publications: this._id } })
+  next()
 })
 
 export default model<PublicationDocument>('Publication', publicationSchema)
