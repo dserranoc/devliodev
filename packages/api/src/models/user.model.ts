@@ -41,6 +41,15 @@ const userSchema = new Schema<UserDocument>({
   verified: { type: Boolean, required: true, default: false }
 }, { timestamps: true })
 
+userSchema.set('toJSON', {
+  transform: (_, returnedObject) => {
+    returnedObject.id = returnedObject._id
+    delete returnedObject._id
+    delete returnedObject.__v
+    delete returnedObject.password
+  }
+})
+
 userSchema.pre('save', { document: true, query: false }, async function (next) {
   if (this.isModified('password')) {
     const SALTFACTOR = config.get<number>('saltFactor')
