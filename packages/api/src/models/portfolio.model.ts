@@ -17,4 +17,12 @@ const portfolioSchema = new Schema<PortfolioDocument>({
   user: { type: Schema.Types.ObjectId, ref: 'User' }
 }, { timestamps: true })
 
+portfolioSchema.set('toJSON', {
+  transform: (_, returnedObject) => {
+    returnedObject.id = returnedObject._id
+    delete returnedObject._id
+    delete returnedObject.__v
+  }
+})
+
 export default model<PortfolioDocument>('Portfolio', portfolioSchema)
