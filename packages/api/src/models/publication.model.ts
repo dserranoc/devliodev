@@ -36,4 +36,19 @@ publicationSchema.pre('deleteOne', { document: true, query: false }, async funct
   next()
 })
 
+publicationSchema.pre('save', { document: true, query: false }, async function (next) {
+  if (!this.isNew && this.isModified('portfolio')) {
+    await Portfolio.updateOne({ _id: this.portfolio }, { $pull: { publications: this._id } })
+  }
+  next()
+})
+
+publicationSchema.post('save', { document: true, query: false }, async function (doc, next) {
+  if (doc.isNew) {
+    await User.updateOne({ _id: doc.user }, { $addToSet: { publications: doc._id } })
+  }
+  await Portfolio.updateOne({ _id: doc.portfolio }, { $addToSet: { publications: doc._id } })
+  next()
+})
+
 export default model<PublicationDocument>('Publication', publicationSchema)
