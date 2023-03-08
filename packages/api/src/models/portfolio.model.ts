@@ -38,4 +38,19 @@ portfolioSchema.pre('deleteOne', { document: true, query: false }, async functio
   next()
 })
 
+portfolioSchema.pre('save', { document: true, query: false }, async function (next) {
+  if (!this.isNew && this.isModified('projects')) {
+    await Project.updateMany({ _id: { $in: this.projects } }, { $pull: { assignedTo: this._id } })
+  }
+  next()
+})
+
+portfolioSchema.post('save', { document: true, query: false }, async function (doc, next) {
+  if (doc.isNew) {
+    await User.updateOne({ _id: doc.user }, { $addToSet: { portfolios: doc._id } })
+  }
+  await Project.updateMany({ _id: { $in: doc.projects } }, { $addToSet: { assignedTo: doc._id } })
+  next()
+})
+
 export default model<PortfolioDocument>('Portfolio', portfolioSchema)
