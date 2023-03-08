@@ -1,4 +1,5 @@
 import { Schema, model, Types } from 'mongoose'
+import bcrypt from 'bcrypt'
 
 export interface UserInput {
   email: string
@@ -35,5 +36,11 @@ const userSchema = new Schema<UserDocument>({
   socials: [{ type: String }],
   verified: { type: Boolean, required: true, default: false }
 }, { timestamps: true })
+
+userSchema.methods.comparePassword = async function (candidatePassword: string): Promise<boolean> {
+  const user = this as UserDocument
+  return await bcrypt.compare(candidatePassword, user.password)
+    .catch(() => false)
+}
 
 export default model<UserDocument>('User', userSchema)
