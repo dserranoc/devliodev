@@ -1,6 +1,9 @@
 import { Schema, model, Types } from 'mongoose'
 import bcrypt from 'bcrypt'
 import config from 'config'
+import Project from './project.model'
+import Portfolio from './portfolio.model'
+import Publication from './publication.model'
 
 export interface UserInput {
   email: string
@@ -43,6 +46,13 @@ userSchema.pre('save', { document: true, query: false }, async function (next) {
     const SALTFACTOR = config.get<number>('saltFactor')
     this.password = await bcrypt.hash(this.password, SALTFACTOR)
   }
+  next()
+})
+
+userSchema.pre('deleteOne', { document: true, query: false }, async function (next) {
+  await Publication.deleteMany({ _id: { $in: this.publications } })
+  await Portfolio.deleteMany({ _id: { $in: this.portfolios } })
+  await Project.deleteMany({ _id: { $in: this.projects } })
   next()
 })
 
