@@ -3,5 +3,8 @@ export default {
   baseUrl: 'http://localhost',
   mongoUrl: 'mongodb://localhost:27017/devliodev',
   logLevel: 'info',
-  saltFactor: 10
+  saltFactor: 10,
+  jwt: {
+    secret: ''
+  }
 }
