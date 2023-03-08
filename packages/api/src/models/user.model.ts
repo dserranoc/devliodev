@@ -1,5 +1,6 @@
 import { Schema, model, Types } from 'mongoose'
 import bcrypt from 'bcrypt'
+import config from 'config'
 
 export interface UserInput {
   email: string
@@ -36,6 +37,14 @@ const userSchema = new Schema<UserDocument>({
   socials: [{ type: String }],
   verified: { type: Boolean, required: true, default: false }
 }, { timestamps: true })
+
+userSchema.pre('save', { document: true, query: false }, async function (next) {
+  if (this.isModified('password')) {
+    const SALTFACTOR = config.get<number>('saltFactor')
+    this.password = await bcrypt.hash(this.password, SALTFACTOR)
+  }
+  next()
+})
 
 userSchema.methods.comparePassword = async function (candidatePassword: string): Promise<boolean> {
   const user = this as UserDocument
