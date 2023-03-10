@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import { CreateUserInput, createUserSchema, LoginUserInput } from '../schemas/user.schema'
 import UserService from '../services/user.service'
-import { StandardResponse } from '../types/types'
+import { StandardResponse } from '../types/types.d'
 import jwt from '../utils/jwt'
 
 const userController = {
