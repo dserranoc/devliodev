@@ -11,6 +11,17 @@ const UserService = {
     const user = await User.findOne(query, {}, options)
     return user
   },
+  validateCredentials: async ({ email, password }: { email: string, password: string }) => {
+    const user = await User.findOne({ email })
+    if (user === null) {
+      return false
+    }
+
+    const isValid = await user.comparePassword(password)
+    if (!isValid) return false
+
+    return user
+  },
   findAndUpdate: async (query: FilterQuery<UserDocument>, update: UpdateQuery<UserDocument>, options: QueryOptions) => {
     return await User.findOneAndUpdate(query, update, options)
   },

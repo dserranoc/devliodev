@@ -70,6 +70,17 @@ export const resetPasswordSchema = object({
   })
 })
 
+export const loginUserSchema = object({
+  body: object({
+    email: string({
+      required_error: 'Email is required'
+    }).email('Not a valid email'),
+    password: string({
+      required_error: 'Password is required'
+    })
+  })
+})
+
 export type CreateUserInput = Omit<TypeOf<typeof createUserSchema>, 'body.passwordConfirmation'>
 export type UpdateUserInput = Omit<TypeOf<typeof updateUserSchema>, 'body.passwordConfirmation'>
 export type DeleteUserInput = TypeOf<typeof deleteUserSchema>
@@ -77,3 +88,4 @@ export type GetUserInput = TypeOf<typeof getUserSchema>
 export type VerifyUserInput = TypeOf<typeof verifyUserSchema>
 export type ForgotPasswordInput = TypeOf<typeof forgotPasswordSchema>
 export type ResetPasswordInput = TypeOf<typeof resetPasswordSchema>
+export type LoginUserInput = TypeOf<typeof loginUserSchema>

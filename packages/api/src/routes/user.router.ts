@@ -9,4 +9,7 @@ const router = Router()
 // eslint-disable-next-line @typescript-eslint/no-misused-promises
 router.post('/', asyncHandler(userController.register))
 
+// eslint-disable-next-line @typescript-eslint/no-misused-promises
+router.post('/auth', asyncHandler(userController.auth))
+
 export default router
