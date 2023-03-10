@@ -13,9 +13,9 @@ const getUserFromReq = async (req: Request, res: Response, next: NextFunction): 
     return next()
   }
 
-  const { decoded } = jwt.verify(accessToken)
+  const { decoded, expired } = jwt.verify(accessToken)
 
-  if (decoded !== null) {
+  if (decoded !== null && expired === false) {
     res.locals.user = decoded
     return next()
   }

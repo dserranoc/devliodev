@@ -5,6 +5,7 @@ export default {
   logLevel: 'info',
   saltFactor: 10,
   jwt: {
-    secret: ''
+    secret: '',
+    expiresIn: '7d'
   }
 }
