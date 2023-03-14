@@ -27,14 +27,15 @@ portfolioSchema.set('toJSON', {
   }
 })
 
-portfolioSchema.pre('deleteOne', { document: true, query: false }, async function (next) {
-  if (this.assignedTo.length > 0) {
+portfolioSchema.pre('deleteOne', { document: false, query: true }, async function (next) {
+  const portfolio = await this.model.findOne(this.getQuery())
+  if (portfolio.assignedTo.length > 0) {
     const err = new Error('Cannot delete a published portfolio. Please unpublish it first.')
     return next(err)
   }
 
-  await User.updateOne({ _id: this.user }, { $pull: { portfolios: this._id } })
-  await Project.updateMany({ _id: { $in: this.projects } }, { $pull: { assignedTo: this._id } })
+  await User.updateOne({ _id: portfolio.user }, { $pull: { portfolios: portfolio._id } })
+  await Project.updateMany({ _id: { $in: portfolio.projects } }, { $pull: { assignedTo: portfolio._id } })
   next()
 })
 

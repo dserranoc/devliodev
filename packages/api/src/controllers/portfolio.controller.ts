@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import { StandardResponse } from '../types/types.d'
 import PortfolioService from '../services/portfolio.service'
-import { CreatePortfolioInput, UpdatePortfolioInput } from '../schemas/portfolio.schema'
+import { CreatePortfolioInput, UpdatePortfolioInput, DeletePortfolioInput } from '../schemas/portfolio.schema'
 
 const portfolioController = {
   create: async (req: Request<CreatePortfolioInput['body']>, res: Response<StandardResponse, {}>, _next: NextFunction) => {
@@ -62,6 +62,36 @@ const portfolioController = {
     return res.status(200).json({
       success: true,
       content: updatedPortfolio
+    })
+  },
+  delete: async (req: Request<DeletePortfolioInput['params']>, res: Response<StandardResponse, {}>, _next: NextFunction) => {
+    const userId = res.locals.user.id
+
+    const portfolio = await PortfolioService.find({ _id: req.params.portfolioId })
+
+    if (portfolio === null) {
+      return res.status(404).json({
+        success: false,
+        error: {
+          message: 'Portfolio not found'
+        }
+      })
+    }
+
+    if (portfolio.user.toString() !== userId) {
+      return res.status(401).json({
+        success: false,
+        error: {
+          message: 'Unauthorized'
+        }
+      })
+    }
+
+    await PortfolioService.delete({ _id: req.params.portfolioId })
+
+    return res.status(200).json({
+      success: true,
+      message: 'Portfolio deleted successfully!'
     })
   }
 }
