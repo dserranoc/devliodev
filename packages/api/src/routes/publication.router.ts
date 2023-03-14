@@ -12,4 +12,7 @@ router.post('/', [getUserFromReq, requireAuth], asyncHandler(publicationControll
 // eslint-disable-next-line @typescript-eslint/no-misused-promises
 router.get('/:publicationId', asyncHandler(publicationController.get))
 
+// eslint-disable-next-line @typescript-eslint/no-misused-promises
+router.put('/:publicationId', [getUserFromReq, requireAuth], asyncHandler(publicationController.update))
+
 export default router
