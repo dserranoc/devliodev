@@ -12,14 +12,15 @@ export interface PublicationInput {
 }
 
 export interface PublicationDocument extends PublicationInput, Document {
-  user: { type: Schema.Types.ObjectId, ref: 'User' }
+  user: Types.ObjectId
 }
 
 const publicationSchema = new Schema<PublicationDocument>({
   subdomain: { type: String, required: true, unique: true },
   portfolio: { type: Schema.Types.ObjectId, ref: 'Portfolio' },
   status: { type: String, required: true, enum: ['draft', 'published'], default: 'draft' },
-  template: { type: String, required: true }
+  template: { type: String, required: true },
+  user: { type: Schema.Types.ObjectId, ref: 'User' }
 }, { timestamps: true })
 
 publicationSchema.set('toJSON', {
@@ -44,10 +45,8 @@ publicationSchema.pre('save', { document: true, query: false }, async function (
 })
 
 publicationSchema.post('save', { document: true, query: false }, async function (doc, next) {
-  if (doc.isNew) {
-    await User.updateOne({ _id: doc.user }, { $addToSet: { publications: doc._id } })
-  }
-  await Portfolio.updateOne({ _id: doc.portfolio }, { $addToSet: { publications: doc._id } })
+  await User.updateOne({ _id: doc.user }, { $addToSet: { publications: doc._id } })
+  await Portfolio.updateOne({ _id: doc.portfolio }, { $addToSet: { assignedTo: doc._id } })
   next()
 })
 
