@@ -31,9 +31,10 @@ publicationSchema.set('toJSON', {
   }
 })
 
-publicationSchema.pre('deleteOne', { document: true, query: false }, async function (next) {
-  await Portfolio.updateOne({ _id: this.portfolio }, { $pull: { publications: this._id } })
-  await User.updateOne({ _id: this.user }, { $pull: { publications: this._id } })
+publicationSchema.pre('deleteOne', { document: false, query: true }, async function (next) {
+  const publication = await this.model.findOne(this.getQuery())
+  await Portfolio.updateOne({ _id: publication.portfolio }, { $pull: { assignedTo: publication._id } })
+  await User.updateOne({ _id: publication.user }, { $pull: { publications: publication._id } })
   next()
 })
 

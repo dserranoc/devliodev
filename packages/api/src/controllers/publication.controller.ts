@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import { StandardResponse } from '../types/types.d'
 import PublicationService from '../services/publication.service'
-import { CreatePublicationInput, UpdatePublicationInput } from '../schemas/publication.schema'
+import { CreatePublicationInput, DeletePublicationInput, UpdatePublicationInput } from '../schemas/publication.schema'
 
 const publicationController = {
   create: async (req: Request<CreatePublicationInput['body']>, res: Response<StandardResponse, {}>, _next: NextFunction) => {
@@ -59,6 +59,36 @@ const publicationController = {
     return res.status(200).json({
       success: true,
       content: updatedPublication
+    })
+  },
+  delete: async (req: Request<DeletePublicationInput['params']>, res: Response<StandardResponse, {}>, _next: NextFunction) => {
+    const userId = res.locals.user.id
+
+    const publication = await PublicationService.find({ _id: req.params.publicationId })
+
+    if (publication === null) {
+      return res.status(404).json({
+        success: false,
+        error: {
+          message: 'Publication not found'
+        }
+      })
+    }
+
+    if (publication.user.toString() !== userId) {
+      return res.status(401).json({
+        success: false,
+        error: {
+          message: 'Unauthorized'
+        }
+      })
+    }
+
+    await PublicationService.delete({ _id: req.params.publicationId })
+
+    return res.status(200).json({
+      success: true,
+      message: 'Publication deleted successfully!'
     })
   }
 }
