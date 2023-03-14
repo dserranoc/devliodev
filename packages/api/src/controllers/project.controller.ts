@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import { StandardResponse } from '../types/types.d'
 import ProjectService from '../services/project.service'
-import { CreateProjectInput, UpdateProjectInput } from '../schemas/project.schema'
+import { CreateProjectInput, DeleteProjectInput, UpdateProjectInput } from '../schemas/project.schema'
 
 const projectController = {
   create: async (req: Request<CreateProjectInput['body']>, res: Response<StandardResponse, {}>, _next: NextFunction) => {
@@ -70,6 +70,36 @@ const projectController = {
     return res.status(200).json({
       success: true,
       content: updatedProject
+    })
+  },
+
+  delete: async (req: Request<DeleteProjectInput['params']>, res: Response<StandardResponse, {}>, _next: NextFunction) => {
+    const userId = res.locals.user.id
+
+    const project = await ProjectService.find({ _id: req.params.projectId })
+
+    if (project === null) {
+      return res.status(404).json({
+        success: false,
+        error: {
+          message: 'Project not found'
+        }
+      })
+    }
+    if (project.user.toString() !== userId) {
+      return res.status(401).json({
+        success: false,
+        error: {
+          message: 'Unauthorized'
+        }
+      })
+    }
+
+    await ProjectService.delete({ _id: req.params.projectId })
+
+    return res.status(200).json({
+      success: true,
+      message: 'Project deleted successfully!'
     })
   }
 }

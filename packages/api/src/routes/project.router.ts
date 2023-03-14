@@ -15,4 +15,7 @@ router.get('/:projectId', asyncHandler(projectController.get))
 // eslint-disable-next-line @typescript-eslint/no-misused-promises
 router.put('/:projectId', [getUserFromReq, requireAuth], asyncHandler(projectController.update))
 
+// eslint-disable-next-line @typescript-eslint/no-misused-promises
+router.delete('/:projectId', [getUserFromReq, requireAuth], asyncHandler(projectController.delete))
+
 export default router
