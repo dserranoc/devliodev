@@ -9,7 +9,7 @@ export interface PortfolioInput {
 
 export interface PortfolioDocument extends PortfolioInput, Document {
   assignedTo: Types.ObjectId[]
-  user: { type: Schema.Types.ObjectId, ref: 'User' }
+  user: Types.ObjectId
 }
 
 const portfolioSchema = new Schema<PortfolioDocument>({

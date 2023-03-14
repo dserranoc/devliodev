@@ -12,4 +12,7 @@ router.post('/', [getUserFromReq, requireAuth], asyncHandler(portfolioController
 // eslint-disable-next-line @typescript-eslint/no-misused-promises
 router.get('/:portfolioId', asyncHandler(portfolioController.get))
 
+// eslint-disable-next-line @typescript-eslint/no-misused-promises
+router.put('/:portfolioId', [getUserFromReq, requireAuth], asyncHandler(portfolioController.update))
+
 export default router

@@ -28,6 +28,41 @@ const portfolioController = {
       success: true,
       content: portfolio
     })
+  },
+
+  update: async (req: Request<UpdatePortfolioInput['params'] & UpdatePortfolioInput['body']>, res: Response<StandardResponse, {}>, _next: NextFunction) => {
+    const userId = res.locals.user.id
+
+    const update = req.body
+
+    const portfolio = await PortfolioService.find({ _id: req.params.portfolioId })
+
+    if (portfolio === null) {
+      return res.status(404).json({
+        success: false,
+        error: {
+          message: 'Portfolio not found'
+        }
+      })
+    }
+
+    if (portfolio.user.toString() !== userId) {
+      return res.status(401).json({
+        success: false,
+        error: {
+          message: 'Unauthorized'
+        }
+      })
+    }
+
+    const updatedPortfolio = await PortfolioService.findAndUpdate({ _id: req.params.portfolioId }, update, {
+      new: true
+    })
+
+    return res.status(200).json({
+      success: true,
+      content: updatedPortfolio
+    })
   }
 }
 
