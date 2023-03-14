@@ -40,9 +40,10 @@ projectSchema.post('save', async function (doc, next) {
   next()
 })
 
-projectSchema.pre('deleteOne', { document: true, query: false }, async function (next) {
-  await User.updateOne({ _id: this.user }, { $pull: { projects: this._id } })
-  await Portfolio.updateMany({ _id: { $in: this.assignedTo } }, { $pull: { projects: this._id } })
+projectSchema.pre('deleteOne', { document: false, query: true }, async function (next) {
+  const project = await this.model.findOne(this.getQuery())
+  await User.updateOne({ _id: project.user }, { $pull: { projects: project._id } })
+  await Portfolio.updateMany({ _id: { $in: project.assignedTo } }, { $pull: { projects: project._id } })
   next()
 })
 
