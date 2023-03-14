@@ -35,7 +35,7 @@ const userController = {
     })
   },
   update: async (req: Request<UpdateUserInput['body']>, res: Response<StandardResponse, {}>, _next: NextFunction) => {
-    const userId = res.locals.user._id
+    const userId = res.locals.user.id
 
     if (userId === null) {
       return res.status(401).json({
@@ -51,7 +51,7 @@ const userController = {
     return res.status(200).json({ success: true, content: user })
   },
   delete: async (req: Request<DeleteUserInput['params']>, res: Response<StandardResponse, {}>, _next: NextFunction) => {
-    const userId = res.locals.user._id
+    const userId = res.locals.user.id
 
     if (userId === null) {
       return res.status(401).json({

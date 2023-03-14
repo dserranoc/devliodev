@@ -10,7 +10,7 @@ declare global {
     interface Locals {
       user: {
         email: string
-        _id: string
+        id: string
       }
     }
   }
