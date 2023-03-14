@@ -9,4 +9,7 @@ const router = Router()
 // eslint-disable-next-line @typescript-eslint/no-misused-promises
 router.post('/', [getUserFromReq, requireAuth], asyncHandler(publicationController.create))
 
+// eslint-disable-next-line @typescript-eslint/no-misused-promises
+router.get('/:publicationId', asyncHandler(publicationController.get))
+
 export default router
