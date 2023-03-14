@@ -37,6 +37,40 @@ const projectController = {
       success: true,
       content: project
     })
+  },
+
+  update: async (req: Request<UpdateProjectInput['params'] & UpdateProjectInput['body']>, res: Response<StandardResponse, {}>, _next: NextFunction) => {
+    const userId = res.locals.user.id
+
+    const update = req.body
+
+    const project = await ProjectService.find({ _id: req.params.projectId })
+
+    if (project === null) {
+      return res.status(404).json({
+        success: false,
+        error: {
+          message: 'Project not found'
+        }
+      })
+    }
+    if (project.user.toString() !== userId) {
+      return res.status(401).json({
+        success: false,
+        error: {
+          message: 'Unauthorized'
+        }
+      })
+    }
+
+    const updatedProject = await ProjectService.findAndUpdate({ _id: req.params.projectId }, update, {
+      new: true
+    })
+
+    return res.status(200).json({
+      success: true,
+      content: updatedProject
+    })
   }
 }
 

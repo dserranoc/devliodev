@@ -12,4 +12,7 @@ router.post('/', [getUserFromReq, requireAuth], asyncHandler(projectController.c
 // eslint-disable-next-line @typescript-eslint/no-misused-promises
 router.get('/:projectId', asyncHandler(projectController.get))
 
+// eslint-disable-next-line @typescript-eslint/no-misused-promises
+router.put('/:projectId', [getUserFromReq, requireAuth], asyncHandler(projectController.update))
+
 export default router
