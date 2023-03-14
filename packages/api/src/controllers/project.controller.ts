@@ -7,15 +7,6 @@ const projectController = {
   create: async (req: Request<CreateProjectInput['body']>, res: Response<StandardResponse, {}>, _next: NextFunction) => {
     const userId = res.locals.user.id
 
-    if (userId === null) {
-      return res.status(401).json({
-        success: false,
-        error: {
-          message: 'Invalid credentials'
-        }
-      })
-    }
-
     const project = await ProjectService.save({ ...req.body, user: userId })
     return res.status(201).json({
       success: true,
